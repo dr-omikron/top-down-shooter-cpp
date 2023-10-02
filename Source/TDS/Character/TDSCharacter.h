@@ -37,9 +37,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	FCharacterSpeed MovementInfo;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	bool SprintRunEnabled = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	bool WalkEnabled = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	bool AimEnabled = false;
+
 	UFUNCTION(BlueprintCallable)
 	void CharacterUpdate();
 
 	UFUNCTION(BlueprintCallable)
-	void ChangeMovementState(EMovementState NewMovementState);
+	void ChangeMovementState();
 };
