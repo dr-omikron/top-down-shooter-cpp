@@ -40,6 +40,14 @@ void ATDSCharacter::Tick(float DeltaSeconds)
     Super::Tick(DeltaSeconds);
 }
 
+void ATDSCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CurrentStamina = MaxStamina;
+	StaminaRecoverDelay = StaminaRecoverDelayMin;
+}
+
 void ATDSCharacter::CharacterUpdate()
 {
 	float ResSpeed = 600.0f;
@@ -67,18 +75,114 @@ void ATDSCharacter::CharacterUpdate()
 	GetCharacterMovement()->MaxWalkSpeed = ResSpeed;
 }
 
+void ATDSCharacter::ExpenceStamina()
+{
+	if(CurrentStamina >= 0.0f)
+	{
+		CurrentStamina -= StaminaExpenceRate;
+	}
+}
+
+void ATDSCharacter::RecoveryStamina()
+{
+	if (CurrentStamina < MaxStamina)
+	{
+		CurrentStamina += StaminaRecoverRate;
+	}
+	else
+	{
+		StopRecoveryStamina();
+	}
+}
+
+void ATDSCharacter::StartRecoveryStamina()
+{
+	if(CurrentStamina <= 0)
+	{
+		StaminaRecoverDelay = StaminaRecoverDelayMax;
+		SprintButtonReleased = false;
+	}
+	else
+	{
+		StaminaRecoverDelay = StaminaRecoverDelayMin;
+	}
+	if (!GetWorld()->GetTimerManager().IsTimerActive(StaminaRecoverTimer))
+	{
+		GetWorld()->GetTimerManager().SetTimer(StaminaRecoverTimer, this, &ATDSCharacter::RecoveryStamina, 
+			StaminaRecoverTime, true, StaminaRecoverDelay);
+	}
+}
+
+void ATDSCharacter::StartExpenceStamina()
+{
+	if (!GetWorld()->GetTimerManager().IsTimerActive(StaminaExpenceTimer))
+	{
+		GetWorld()->GetTimerManager().SetTimer(StaminaExpenceTimer, this, &ATDSCharacter::ExpenceStamina, 
+			StaminaExpenceTime, true, 0.0f);
+	}
+}
+
+void ATDSCharacter::StopRecoveryStamina()
+{
+	if (GetWorld()->GetTimerManager().IsTimerActive(StaminaRecoverTimer))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(StaminaRecoverTimer);
+	}
+}
+
+void ATDSCharacter::StopExpenceStamina()
+{
+	if (GetWorld()->GetTimerManager().IsTimerActive(StaminaExpenceTimer))
+	{
+		GetWorld()->GetTimerManager().ClearTimer(StaminaExpenceTimer);
+	}
+}
+
+bool ATDSCharacter::CharacterMoving() const
+{
+	const FVector2D CharacterGroundVelocity(GetMovementComponent()->Velocity.X, GetMovementComponent()->Velocity.Y);
+	if (CharacterGroundVelocity.Length())
+		return true;
+	return false;
+}
+
 void ATDSCharacter::ChangeMovementState()
 {
 	if(!WalkEnabled && !SprintRunEnabled && !AimEnabled)
 	{
 		MovementState = EMovementState::Run_State;
 	}
-
-	if(SprintRunEnabled)
+	
+	if(SprintButtonReleased && SprintRunEnabled && CurrentStamina > 0.0f)
 	{
 		WalkEnabled = false;
 		AimEnabled = false;
+				
 		MovementState = EMovementState::SprintRun_State;
+		if(CharacterMoving())
+		{
+			StopRecoveryStamina();
+			StartExpenceStamina();
+		}
+		else
+		{
+			StopExpenceStamina();
+			StartRecoveryStamina();
+		}
+		
+	}
+
+	if (SprintRunEnabled && CurrentStamina <= 0)
+	{
+		StopExpenceStamina();
+		MovementState = EMovementState::Run_State;
+		StartRecoveryStamina();
+	}
+
+	if(!SprintRunEnabled && CurrentStamina < MaxStamina)
+	{
+		StopExpenceStamina();
+		StartRecoveryStamina();
 	}
 
 	if(WalkEnabled && !SprintRunEnabled && AimEnabled)
