@@ -57,7 +57,7 @@ void ATDSPlayerController::MovementTick(FVector2D MovementValue) const
 void ATDSPlayerController::WatchTheCursor() const
 {
 	FHitResult HitResult;
-	GetHitResultUnderCursorByChannel(ETraceTypeQuery::TraceTypeQuery6, false, HitResult);
+	GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, false, HitResult);
 	if(PlayerCharacter)
 	{
 		const FRotator CharacterRotation = UKismetMathLibrary::FindLookAtRotation(PlayerCharacter->GetActorLocation(), HitResult.Location);

@@ -3,7 +3,14 @@ DerivedDataCache
 Intermediate
 Saved
 Platforms
-Content/BlackAlder
+Content/Art/**
+Content/Megascans/**
+Content/MSPresets/**
+Content/Sounds/**
+Content/VFX/**
+Content/__ExternalActors__/**
+Content/__ExternalObjects__/**
+
 .vscode
 .vs
 *.VC.db
