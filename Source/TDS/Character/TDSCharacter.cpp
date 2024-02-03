@@ -175,6 +175,8 @@ void ATDSCharacter::ChangeMovementState()
 	if (SprintRunEnabled && CurrentStamina <= 0)
 	{
 		StopExpenceStamina();
+		WalkEnabled = false;
+		AimEnabled = false;
 		MovementState = EMovementState::Run_State;
 		StartRecoveryStamina();
 	}
