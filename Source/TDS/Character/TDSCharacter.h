@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "TDS/FuncLibrary/TypesData.h"
+#include "TDS/Game/WeaponBase.h"
 #include "TDSCharacter.generated.h"
 
 
@@ -37,11 +38,17 @@ private:
 	FTimerHandle StaminaRecoverTimer;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
+	AWeaponBase* CurrentWeapon = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	EMovementState MovementState = EMovementState::Run_State;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	FCharacterSpeed MovementInfo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Demo")
+	TSubclassOf<AWeaponBase> InitWeaponClass = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float MaxStamina = 100.0f;
@@ -108,4 +115,14 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool CharacterMoving() const;
+
+	UFUNCTION(BlueprintCallable)
+	void InitWeapon();
+
+	UFUNCTION(BlueprintCallable)
+	AWeaponBase* GetCurrentWeapon() const { return CurrentWeapon; }
+
+	UFUNCTION(BlueprintCallable)
+	void AttackCharacterEvent(bool bIsFiring);
+
 };

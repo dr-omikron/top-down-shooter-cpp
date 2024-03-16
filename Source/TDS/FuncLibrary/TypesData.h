@@ -38,8 +38,37 @@ public:
 	float SprintRunSpeed = 800.0f;
 };
 
+USTRUCT(BlueprintType)
+struct FProjectileInfo
+{
+	GENERATED_BODY()
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileSettings")
+	TSubclassOf <class AProjectileBase> Projectile = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ProjectileSettings")
+	float ProjectileDamage = 20.0f;
+};
+
+USTRUCT(BlueprintType)
+struct FWeaponInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponSettings")
+	float WeaponDamage = 20.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponSettings")
+	float RateOfFire = 0.5f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "WeaponSettings")
+	FProjectileInfo ProjectileSettings;
+};
+
 UCLASS()
-class TDS_API UTypes : public UBlueprintFunctionLibrary
+class TDS_API UTypesData : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:

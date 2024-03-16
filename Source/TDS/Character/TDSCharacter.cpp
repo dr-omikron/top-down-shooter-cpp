@@ -46,6 +46,8 @@ void ATDSCharacter::BeginPlay()
 
 	CurrentStamina = MaxStamina;
 	StaminaRecoverDelay = StaminaRecoverDelayMin;
+
+	InitWeapon();
 }
 
 void ATDSCharacter::CharacterUpdate()
@@ -144,6 +146,48 @@ bool ATDSCharacter::CharacterMoving() const
 	if (CharacterGroundVelocity.Length())
 		return true;
 	return false;
+}
+
+void ATDSCharacter::InitWeapon()
+{
+	if(InitWeaponClass)
+	{
+		const FVector SpawnLocation = FVector(0);
+		const FRotator SpawnRotation = FRotator(0);
+
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParameters.Owner = GetOwner();
+		SpawnParameters.Instigator = GetInstigator();
+
+		AWeaponBase* SpawnWeapon = Cast<AWeaponBase>(GetWorld()->SpawnActor(InitWeaponClass, &SpawnLocation, &SpawnRotation, SpawnParameters));
+		if(SpawnWeapon)
+		{
+			FAttachmentTransformRules Rule(EAttachmentRule::SnapToTarget, false);
+			SpawnWeapon->AttachToComponent(GetMesh(), Rule, FName("pistol_socket"));
+			CurrentWeapon = SpawnWeapon;
+			UE_LOG(LogTemp, Warning, TEXT("ATDSCharacter::InitWeapon - Dont Spawn"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ATDSCharacter::InitWeapon - CurrentWeapon = NULL"));
+		}
+	}
+}
+
+void ATDSCharacter::AttackCharacterEvent(bool bIsFiring)
+{
+	AWeaponBase* Weapon = nullptr;
+	Weapon = GetCurrentWeapon();
+
+	if(Weapon)
+	{
+		Weapon->SetWeaponStateFire(bIsFiring);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ATDSCharacter::AttackCharacterEvent - CurrentWeapon = NULL"));
+	}
 }
 
 void ATDSCharacter::ChangeMovementState()
