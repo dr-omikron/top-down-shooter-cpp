@@ -23,6 +23,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character")
 	class ATDSCharacter* PlayerCharacter;
 
+	UFUNCTION(BlueprintCallable)
+	FVector GetCursorLocation() const;
+
+	UFUNCTION(BlueprintCallable)
+	ATDSCharacter* GetCharacterRef() const { return PlayerCharacter; }
+
 	UFUNCTION()
 	void MovementTick(FVector2D MovementValue) const;
 

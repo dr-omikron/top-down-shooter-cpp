@@ -45,6 +45,13 @@ void ATDSPlayerController::OnMove(const FInputActionValue& Value)
 	MovementTick(MovementValue);
 }
 
+FVector ATDSPlayerController::GetCursorLocation() const
+{
+	FHitResult HitResult;
+	GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, false, HitResult);
+	return HitResult.Location;
+}
+
 void ATDSPlayerController::MovementTick(FVector2D MovementValue) const
 {
 	if (PlayerCharacter)
@@ -56,11 +63,10 @@ void ATDSPlayerController::MovementTick(FVector2D MovementValue) const
 
 void ATDSPlayerController::WatchTheCursor() const
 {
-	FHitResult HitResult;
-	GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, false, HitResult);
+	FVector CursorLocation = GetCursorLocation();
 	if(PlayerCharacter)
 	{
-		const FRotator CharacterRotation = UKismetMathLibrary::FindLookAtRotation(PlayerCharacter->GetActorLocation(), HitResult.Location);
+		const FRotator CharacterRotation = UKismetMathLibrary::FindLookAtRotation(PlayerCharacter->GetActorLocation(), CursorLocation);
 		PlayerCharacter->SetActorRotation(FQuat(FRotator(0.0f, CharacterRotation.Yaw, 0.0f)));
 	}
 	
