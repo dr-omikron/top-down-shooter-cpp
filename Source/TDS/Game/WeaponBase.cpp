@@ -1,6 +1,7 @@
 
 #include "WeaponBase.h"
 
+#include "NiagaraComponent.h"
 #include "ProjectileBase.h"
 #include "Components/ArrowComponent.h"
 #include "Components/SceneComponent.h"
@@ -25,9 +26,11 @@ AWeaponBase::AWeaponBase()
 	StaticMeshWeapon->SetCollisionProfileName(TEXT("NoCollision"));
 	StaticMeshWeapon->SetupAttachment(RootComponent);
 
+	ShootFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ShootWeaponVFX"));
+	ShootFX->SetupAttachment(RootComponent);
+
 	ShootLocation = CreateDefaultSubobject<UArrowComponent>(TEXT("ShootLocation"));
 	ShootLocation->SetupAttachment(RootComponent);
-
 }
 
 void AWeaponBase::BeginPlay()
@@ -107,6 +110,11 @@ void AWeaponBase::Fire()
 			if(SpawnProjectile)
 			{
 				SpawnProjectile->InitialLifeSpan = 20.f;
+			}
+
+			if(ShootFX)
+			{
+				ShootFX->Activate(true);
 			}
 		}
 		else

@@ -5,7 +5,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Particles/ParticleSystemComponent.h"
+#include "NiagaraComponent.h"
 
 
 AProjectileBase::AProjectileBase()
@@ -28,7 +28,7 @@ AProjectileBase::AProjectileBase()
 	BulletMesh->SetupAttachment(RootComponent);
 	BulletMesh->SetCanEverAffectNavigation(false);
 
-	BulletFX = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Bullet FX"));
+	BulletFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("TrailBulletVFX"));
 	BulletFX->SetupAttachment(RootComponent);
 
 	BulletMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("Projectile Movement"));

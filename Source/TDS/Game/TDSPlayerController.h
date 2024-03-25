@@ -25,10 +25,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FVector GetCursorLocation() const;
-
-	UFUNCTION(BlueprintCallable)
-	ATDSCharacter* GetCharacterRef() const { return PlayerCharacter; }
-
+		
 	UFUNCTION()
 	void MovementTick(FVector2D MovementValue) const;
 

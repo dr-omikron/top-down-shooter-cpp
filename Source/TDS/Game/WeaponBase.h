@@ -30,6 +30,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category = "Components")
 	class UArrowComponent* ShootLocation = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FXComponent")
+	class UNiagaraComponent* ShootFX = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "FireLogic")
 	FWeaponInfo WeaponSettings;
 
